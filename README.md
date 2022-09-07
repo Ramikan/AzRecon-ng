@@ -1,2 +1,2 @@
 # AzRecon-ng
-Automated Tool for Azure Recon.
+Tool to perform automated Azure penetration testing.
