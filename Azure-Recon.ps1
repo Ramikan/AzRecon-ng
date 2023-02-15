@@ -7,9 +7,14 @@ Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force
 Install-Module -Force AzureAD -Scope CurrentUser
 Install-Module -Force AADInternals -Scope CurrentUser
 Install-Module MSOnline -Force
-Import-Module 'C:\Users\CARTP\Documents\Azure Tools\Azure-Tools\MicroBurst\MicroBurst.psm1' | Unblock-File
+Install-Module -Name ExchangeOnlineManagement -AllowPrerelease -Force
+Install-Module -Name PSWSMan -Force
+apt install git
+git clone https://github.com/NetSPI/MicroBurst.git
+cd Microbust
+Import-Module 'MicroBurst.psm1' | Unblock-File
 #In kali
-#sudo apt install cloud-enum
+sudo apt install cloud-enum
 # Setting Up Alias
 Set-Alias -Name grep -Value Select-String
 Set-Alias -Name cat -Value Get-Content
@@ -34,12 +39,17 @@ Type .\DomainName.txt
 #Functions
 #function Adomain { Type .\DomainName.txt }
  Get-AADIntTenantDomains -Domain | type .\DomainName.txt
+ 
+#Unauthenticated Email enumeration
+# Invoke user enumeration
+$emailidlist = Read-Host -Prompt 'Enter The path to the email list'
+Get-Content $emailidlist | Invoke-AADIntUserEnumerationAsOutsider -Method Normal
 #Authenticated Test
  Connect-AzureAD -Credential $Cred
 #Enumerate all users
  Get-AzureADUser -All $true | Out-File usernames.csv
  #Enumerate Email ID
- Get-AzureADUser -All $true | select UserPrincipalName | Out-File Emails.csv
+ Get-AzureADUser -All $true | select UserPrincipalName | Out-File emailid-auth.csv
 #Enumerate for user with admin as the principle-name
  Get-AzureADUser -SearchString "admin" | Out-File usernames_admin.csv
  Get-AzureADUser -All $true |?{$_.Displayname -match "admin"} | Out-File displaynames_admin.csv
@@ -65,5 +75,6 @@ Invoke-AzureHound -OutputDirectory $path
 
 
 
-
+#To connect mswxchange online
+# Connect-ExchangeOnline
 
